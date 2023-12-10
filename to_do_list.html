@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #todo-container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        #todo-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        #todo-list {
+            padding: 15px;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task input {
+            margin-right: 10px;
+        }
+
+        #todo-footer {
+            padding: 10px;
+            text-align: center;
+        }
+
+        #add-task-input {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        #add-task-btn {
+            padding: 8px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task button {
+        padding: 5px 10px;
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        }
+
+        .task button:hover {
+            background-color: #c0392b;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="todo-container">
+    <div id="todo-header">To-Do List</div>
+    <div id="todo-list"></div>
+    <div id="todo-footer">
+        <input type="text" id="add-task-input" placeholder="Add a new task">
+        <button id="add-task-btn">Add Task</button>
+    </div>
+</div>
+
+<script>
+    const todoList = document.getElementById('todo-list');
+    const addTaskInput = document.getElementById('add-task-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        storedTasks.forEach(taskText => addTask(taskText));
+    });
+
+    addTaskBtn.addEventListener('click', function () {
+        const taskText = addTaskInput.value.trim();
+        if (taskText !== '') {
+            addTask(taskText);
+            addTaskInput.value = '';
+
+            saveTasks();
+        }
+    });
+
+    function addTask(taskText) {
+        const taskDiv = document.createElement('div');
+        taskDiv.classList.add('task');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+
+        const taskLabel = document.createElement('label');
+        taskLabel.textContent = taskText;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', function () {
+            taskDiv.remove();
+            saveTasks();
+        });
+
+        taskDiv.appendChild(checkbox);
+        taskDiv.appendChild(taskLabel);
+        taskDiv.appendChild(deleteBtn);
+
+        todoList.appendChild(taskDiv);
+    }
+
+    function saveTasks() {
+        const tasks = Array.from(document.querySelectorAll('.task label')).map(label => label.textContent);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+</script>
+
+</body>
+</html>
